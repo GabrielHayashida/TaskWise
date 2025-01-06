@@ -4,6 +4,7 @@ import com.TaskWise.taskWise.repository.UserRepository;
 import com.TaskWise.taskWise.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,9 +23,10 @@ public class UserController {
     }
     @PostMapping("/login")
     private String loginUser(@RequestBody User user){
-        return userRepository.findByEmail(user.getEmail())
-                .filter(u -> u.getPassword().equals(user.getPassword()))
-                .map(u -> "Login concluido com sucesso")
-                .orElse("Login inválido");
+        UserDetails user2 = userRepository.findByEmail(user.getEmail());
+        if (user2.getPassword().equals(user.getPassword())){
+            return "Usuário logado com sucesso";
+        }
+        else return "Credenciais inválidas";
     }
 }
